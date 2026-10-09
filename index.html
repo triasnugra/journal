@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASGRA Trading Journal</title>
+    <title>Crypto Trading Journal</title>
     <!-- Tailwind CSS untuk Styling Modern & Responsif -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -40,7 +40,7 @@
             <div class="mb-4 inline-flex p-3 bg-brand/10 text-brand rounded-full">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
             </div>
-            <h1 class="text-2xl font-bold text-white mb-2">ASGRA Trading Journal</h1>
+            <h1 class="text-2xl font-bold text-white mb-2">Crypto Trading Journal</h1>
             <p class="text-gray-400 text-sm mb-6">Silakan login dengan akun Google Anda untuk mengakses terminal jurnal.</p>
             <button onclick="loginGoogle()" class="w-full bg-white text-gray-900 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors shadow-lg">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
@@ -55,9 +55,9 @@
             <div>
                 <h1 class="text-3xl font-bold text-white flex items-center gap-3">
                     <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    ASGRA Trading Journal
+                    Crypto Trading Journal
                 </h1>
-                <p class="text-gray-400 text-sm mt-1">for my evaluation trade.</p>
+                <p class="text-gray-400 text-sm mt-1">Catat, evaluasi, dan tingkatkan performa trading Anda (Tersinkronisasi Cloud).</p>
             </div>
             
             <div class="flex items-center gap-3">
@@ -138,6 +138,12 @@
                                     <option value="Cancel">🚫 Cancelled</option>
                                 </select>
                             </div>
+
+                            <!-- Tambahan Fitur: Alasan dari Hasil Analisis -->
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Alasan Hasil Analisis <span class="text-xs text-gray-500">(Disusul saat hasil keluar)</span></label>
+                                <textarea id="alasanHasil" rows="2" placeholder="Cth: TP kena karena volume breakout valid / SL kena karena news mendadak..." class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand resize-none"></textarea>
+                            </div>
                         </div>
 
                         <div class="flex gap-2 mt-6">
@@ -161,7 +167,7 @@
                     </div>
                     
                     <div class="overflow-x-auto p-0 flex-grow">
-                        <table class="w-full text-sm text-left text-gray-300 min-w-[1200px]">
+                        <table class="w-full text-sm text-left text-gray-300 min-w-[1400px]">
                             <thead class="text-xs text-gray-400 uppercase bg-gray-800/50">
                                 <tr>
                                     <th class="px-4 py-3 whitespace-nowrap">Mesin</th>
@@ -171,8 +177,9 @@
                                     <th class="px-4 py-3 whitespace-nowrap text-right">Entry</th>
                                     <th class="px-4 py-3 whitespace-nowrap text-right text-green-400">TP</th>
                                     <th class="px-4 py-3 whitespace-nowrap text-right text-red-400">SL</th>
-                                    <th class="px-4 py-3 whitespace-nowrap max-w-[200px]">Alasan</th>
+                                    <th class="px-4 py-3 whitespace-nowrap max-w-[180px]">Alasan Entry</th>
                                     <th class="px-4 py-3 whitespace-nowrap">Tgl & Jam Hasil</th>
+                                    <th class="px-4 py-3 whitespace-nowrap max-w-[180px]">Alasan Hasil</th>
                                     <th class="px-4 py-3 whitespace-nowrap text-center">Status</th>
                                     <th class="px-4 py-3 whitespace-nowrap text-center">Aksi</th>
                                 </tr>
@@ -257,7 +264,7 @@
 
         // Load Data dari Firestore
         async function loadDataFromCloud() {
-            tableBody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-gray-400">Memuat data dari Cloud... ⏳</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="12" class="text-center py-8 text-gray-400">Memuat data dari Cloud... ⏳</td></tr>`;
             try {
                 const q = query(collection(db, "trades"), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
@@ -270,7 +277,7 @@
                 renderTable();
             } catch (error) {
                 console.error("Error loading:", error);
-                tableBody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-red-400">Gagal memuat data dari database. Periksa aturan Rules Anda.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="12" class="text-center py-8 text-red-400">Gagal memuat data dari database. Periksa aturan Rules Anda.</td></tr>`;
             }
         }
 
@@ -292,6 +299,7 @@
                 targetSL: parseFloat(document.getElementById('targetSL').value),
                 alasanEntry: document.getElementById('alasanEntry').value,
                 waktuHasil: document.getElementById('waktuHasil').value || '-',
+                alasanHasil: document.getElementById('alasanHasil').value || '-',
                 status: document.getElementById('statusHasil').value,
                 timestamp: editDocId ? journals.find(j => j.id === editDocId).timestamp : Date.now()
             };
@@ -333,6 +341,7 @@
             document.getElementById('targetSL').value = j.targetSL;
             document.getElementById('alasanEntry').value = j.alasanEntry;
             document.getElementById('waktuHasil').value = j.waktuHasil !== '-' ? j.waktuHasil : '';
+            document.getElementById('alasanHasil').value = j.alasanHasil !== '-' ? j.alasanHasil : '';
             document.getElementById('statusHasil').value = j.status || 'Pending';
 
             document.getElementById('formTitle').innerText = `Edit Jurnal: ${j.coin}`;
@@ -348,7 +357,6 @@
             document.getElementById('btnSubmit').innerText = "Simpan Jurnal";
             document.getElementById('btnCancelEdit').classList.add('hidden');
             
-            // Set default date kembali ke hari ini
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tglAnalisis').value = today;
         };
@@ -379,7 +387,7 @@
             const paginatedData = journals.slice(startIndex, endIndex);
 
             if (paginatedData.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-gray-500">Belum ada data jurnal trading.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="12" class="text-center py-8 text-gray-500">Belum ada data jurnal trading.</td></tr>`;
             } else {
                 paginatedData.forEach(j => {
                     const tr = document.createElement('tr');
@@ -404,8 +412,9 @@
                         <td class="px-4 py-3 whitespace-nowrap text-right">${j.entryLimit}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-right font-medium text-green-400">${j.targetTP}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-right font-medium text-red-400">${j.targetSL}</td>
-                        <td class="px-4 py-3 min-w-[200px] truncate max-w-[250px]" title="${j.alasanEntry}">${j.alasanEntry}</td>
+                        <td class="px-4 py-3 min-w-[180px] truncate max-w-[200px]" title="${j.alasanEntry}">${j.alasanEntry}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-gray-400">${displayHasil}</td>
+                        <td class="px-4 py-3 min-w-[180px] truncate max-w-[200px]" title="${j.alasanHasil || '-'}">${j.alasanHasil || '-'}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-center">${statusBadge}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-center">
                             <button onclick="editData('${j.id}')" class="text-blue-400 hover:text-blue-300 font-medium text-xs mr-3">Edit</button>
@@ -444,6 +453,7 @@
                 "Target SL": row.targetSL,
                 "Alasan Entry": row.alasanEntry,
                 "Tanggal & Jam Hasil": row.waktuHasil,
+                "Alasan Hasil": row.alasanHasil || '-',
                 "Status Hasil": row.status || 'Pending'
             }));
 
@@ -452,8 +462,8 @@
             
             ws['!cols'] = [
                 {wch: 12}, {wch: 15}, {wch: 10}, {wch: 12}, 
-                {wch: 15}, {wch: 15}, {wch: 15}, {wch: 40}, 
-                {wch: 20}, {wch: 12}
+                {wch: 15}, {wch: 15}, {wch: 15}, {wch: 35}, 
+                {wch: 20}, {wch: 35}, {wch: 12}
             ];
 
             XLSX.utils.book_append_sheet(wb, ws, "Jurnal Trading");
