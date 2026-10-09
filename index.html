@@ -6,6 +6,8 @@
     <title>Crypto Trading Journal</title>
     <!-- Tailwind CSS untuk Styling Modern & Responsif -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS untuk Export Excel langsung -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -56,9 +58,9 @@
                 </h1>
                 <p class="text-gray-400 text-sm mt-1">Catat, evaluasi, dan tingkatkan performa trading Anda.</p>
             </div>
-            <button onclick="exportCSV()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-lg font-medium transition-colors flex items-center gap-2">
+            <button onclick="exportExcel()" class="bg-brand hover:bg-brandHover text-white px-5 py-2.5 rounded-lg shadow-lg font-medium transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                Download Data (CSV)
+                Download Data (Excel)
             </button>
         </header>
 
@@ -413,67 +415,54 @@
             renderTable();
         }
 
-        // Export ke CSV
-        function exportCSV() {
+        // Export ke Excel (XLSX)
+        function exportExcel() {
             if (journals.length === 0) {
                 alert("Tidak ada data untuk didownload.");
                 return;
             }
 
-            // Header CSV (Sudah ada status)
-            const headers = [
-                "ID", 
-                "Nama Mesin", 
-                "Tanggal Analisis", 
-                "Jam Analisis", 
-                "Nama Coin", 
-                "Target Entry Limit", 
-                "Target TP", 
-                "Target SL", 
-                "Alasan Entry", 
-                "Tanggal & Jam Hasil",
-                "Status Hasil"
+            // 1. Memformat data dari Object ke Array siap export dengan header yang rapi
+            const dataToExport = journals.map(row => ({
+                "ID": row.id,
+                "Nama Mesin": row.mesin,
+                "Tanggal Analisis": row.tglAnalisis,
+                "Jam Analisis": row.jamAnalisis,
+                "Nama Coin": row.coin,
+                "Target Entry Limit": row.entryLimit,
+                "Target TP": row.targetTP,
+                "Target SL": row.targetSL,
+                "Alasan Entry": row.alasanEntry,
+                "Tanggal & Jam Hasil": row.waktuHasil,
+                "Status Hasil": row.status || 'Pending'
+            }));
+
+            // 2. Membuat Lembar Kerja (Worksheet) dari JSON data
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            
+            // 3. Mengatur lebar kolom (opsional) agar saat dibuka langsung rapi
+            const wscols = [
+                {wch: 15}, // ID
+                {wch: 15}, // Mesin
+                {wch: 15}, // Tgl Analisis
+                {wch: 12}, // Jam Analisis
+                {wch: 15}, // Coin
+                {wch: 18}, // Entry
+                {wch: 15}, // TP
+                {wch: 15}, // SL
+                {wch: 50}, // Alasan
+                {wch: 22}, // Waktu Hasil
+                {wch: 15}  // Status
             ];
-            
-            const csvRows = [headers.join(',')];
+            worksheet['!cols'] = wscols;
 
-            // Mapping Data
-            journals.forEach(row => {
-                // Formatting data yang ada koma/enter agar aman di CSV
-                const safeAlasan = `"${row.alasanEntry.replace(/"/g, '""').replace(/\n/g, ' ')}"`;
-                const safeStatus = row.status || 'Pending';
-                
-                const values = [
-                    row.id,
-                    row.mesin,
-                    row.tglAnalisis,
-                    row.jamAnalisis,
-                    row.coin,
-                    row.entryLimit,
-                    row.targetTP,
-                    row.targetSL,
-                    safeAlasan,
-                    row.waktuHasil,
-                    safeStatus
-                ];
-                csvRows.push(values.join(','));
-            });
-
-            // Membuat File Blob
-            const csvContent = csvRows.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            // 4. Membuat File Excel (Workbook)
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Jurnal Trading");
             
-            // Trigger Download
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            
-            // Nama file dinamis dengan tanggal hari ini
+            // 5. Trigger Download (.xlsx)
             const dateStr = new Date().toISOString().split('T')[0];
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Jurnal_Trading_Crypto_${dateStr}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            XLSX.writeFile(workbook, `Jurnal_Trading_Crypto_${dateStr}.xlsx`);
         }
     </script>
 </body>
