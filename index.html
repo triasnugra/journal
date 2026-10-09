@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Trading Journal</title>
+    <!-- Tailwind CSS untuk Styling Modern & Responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBase: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkInput: '#334155',
+                        brand: '#10b981', // Emerald
+                        brandHover: '#059669'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar untuk tabel yang panjang */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+        /* Menghilangkan panah di input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="bg-darkBase text-gray-200 font-sans antialiased min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-white flex items-center gap-2">
+                    <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    Crypto Trading Journal
+                </h1>
+                <p class="text-gray-400 text-sm mt-1">Catat, evaluasi, dan tingkatkan performa trading Anda.</p>
+            </div>
+            <button onclick="exportCSV()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-lg font-medium transition-colors flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Download Data (CSV)
+            </button>
+        </header>
+
+        <main class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            
+            <!-- Area Form Input -->
+            <div class="xl:col-span-1">
+                <div class="bg-darkCard rounded-xl p-6 shadow-xl border border-gray-700/50 sticky top-8">
+                    <h2 class="text-xl font-semibold text-white mb-6 border-b border-gray-700 pb-2">Entry Jurnal Baru</h2>
+                    <form id="journalForm" class="space-y-4">
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Mesin & Coin -->
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Nama Mesin</label>
+                                <select id="mesin" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand">
+                                    <option value="" disabled selected>Pilih Mesin</option>
+                                    <option value="Mesin 1">Mesin 1</option>
+                                    <option value="Mesin 2">Mesin 2</option>
+                                </select>
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Nama Coin</label>
+                                <input type="text" id="coin" required placeholder="Cth: BTC/USDT" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand uppercase">
+                            </div>
+
+                            <!-- Waktu Analisis -->
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Tanggal Analisis</label>
+                                <input type="date" id="tglAnalisis" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand">
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Jam Analisis</label>
+                                <input type="time" id="jamAnalisis" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand">
+                            </div>
+
+                            <!-- Targets -->
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Target Entry Limit</label>
+                                <input type="number" step="any" id="entryLimit" required placeholder="0.00" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand">
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Target TP (Take Profit)</label>
+                                <input type="number" step="any" id="targetTP" required placeholder="0.00" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-green-400">
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Target SL (Stop Loss)</label>
+                                <input type="number" step="any" id="targetSL" required placeholder="0.00" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-red-400">
+                            </div>
+
+                            <!-- Alasan -->
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Alasan Entry</label>
+                                <textarea id="alasanEntry" rows="2" required placeholder="Cth: Rejection di SNR H4, indikator overbought..." class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"></textarea>
+                            </div>
+
+                            <!-- Waktu Hasil & Status -->
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Tanggal & Jam Hasil <span class="text-xs text-gray-500">(Bisa disusul)</span></label>
+                                <input type="datetime-local" id="waktuHasil" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand">
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Status Hasil</label>
+                                <select id="statusHasil" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand font-medium">
+                                    <option value="Pending" selected>⏳ Pending</option>
+                                    <option value="Win">✅ Win (TP)</option>
+                                    <option value="Lose">❌ Lose (SL)</option>
+                                    <option value="Cancel">🚫 Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full mt-6 bg-brand hover:bg-brandHover text-white font-bold py-3 px-4 rounded-lg shadow-md transition-colors duration-200 flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            Simpan Jurnal
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Area Tabel -->
+            <div class="xl:col-span-2">
+                <div class="bg-darkCard rounded-xl shadow-xl border border-gray-700/50 flex flex-col h-full overflow-hidden">
+                    <div class="p-6 border-b border-gray-700 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-white">Riwayat Trading</h2>
+                        <span id="totalDataBadge" class="bg-gray-700 text-gray-300 text-xs px-2.5 py-1 rounded-full font-medium">Total: 0</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto p-0 flex-grow">
+                        <table class="w-full text-sm text-left text-gray-300 min-w-[1200px]">
+                            <thead class="text-xs text-gray-400 uppercase bg-gray-800/50">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap rounded-tl-lg">Mesin</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">Tgl Analisis</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">Jam</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">Coin</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap text-right">Entry</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap text-right text-green-400">TP</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap text-right text-red-400">SL</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap max-w-[200px]">Alasan</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap">Tgl & Jam Hasil</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap text-center">Status</th>
+                                    <th scope="col" class="px-4 py-3 whitespace-nowrap text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-gray-700/50">
+                                <!-- Data tabel akan dirender disini via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="p-4 border-t border-gray-700 bg-gray-800/30 flex justify-between items-center mt-auto">
+                        <span class="text-sm text-gray-400" id="pageInfo">Halaman 1 dari 1</span>
+                        <div class="flex gap-2">
+                            <button onclick="changePage(-1)" id="btnPrev" class="px-3 py-1.5 bg-darkInput hover:bg-gray-600 rounded text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Prev</button>
+                            <button onclick="changePage(1)" id="btnNext" class="px-3 py-1.5 bg-darkInput hover:bg-gray-600 rounded text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // State Management
+        const STORAGE_KEY = 'CRYPTO_JOURNAL_DATA';
+        let journals = [];
+        let currentPage = 1;
+        const rowsPerPage = 20;
+        let editingId = null; // Menyimpan ID data yang sedang diedit
+
+        // DOM Elements
+        const form = document.getElementById('journalForm');
+        const tableBody = document.getElementById('tableBody');
+        const pageInfo = document.getElementById('pageInfo');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const totalDataBadge = document.getElementById('totalDataBadge');
+
+        // Saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tglAnalisis').value = today;
+            
+            // Set default time to now
+            const now = new Date();
+            const timeString = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('jamAnalisis').value = timeString;
+        });
+
+        // Load data dari Local Storage
+        function loadData() {
+            const storedData = localStorage.getItem(STORAGE_KEY);
+            if (storedData) {
+                try {
+                    journals = JSON.parse(storedData);
+                    // Sort by newest id (timestamp)
+                    journals.sort((a, b) => b.id - a.id);
+                } catch (e) {
+                    console.error("Error parsing data", e);
+                    journals = [];
+                }
+            }
+            renderTable();
+        }
+
+        // Simpan data ke Local Storage
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
+        }
+
+        // Handle Submit Form
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newEntry = {
+                id: Date.now(), // Unique ID
+                mesin: document.getElementById('mesin').value,
+                tglAnalisis: document.getElementById('tglAnalisis').value,
+                jamAnalisis: document.getElementById('jamAnalisis').value,
+                coin: document.getElementById('coin').value.toUpperCase(),
+                entryLimit: parseFloat(document.getElementById('entryLimit').value),
+                targetTP: parseFloat(document.getElementById('targetTP').value),
+                targetSL: parseFloat(document.getElementById('targetSL').value),
+                alasanEntry: document.getElementById('alasanEntry').value,
+                waktuHasil: document.getElementById('waktuHasil').value || '-',
+                status: document.getElementById('statusHasil').value
+            };
+
+            journals.unshift(newEntry); // Tambah di awal (atas)
+            saveData();
+            
+            // Reset form sebagian (biarkan mesin, tanggal, jam agar mempermudah input beruntun)
+            document.getElementById('coin').value = '';
+            document.getElementById('entryLimit').value = '';
+            document.getElementById('targetTP').value = '';
+            document.getElementById('targetSL').value = '';
+            document.getElementById('alasanEntry').value = '';
+            document.getElementById('waktuHasil').value = '';
+            document.getElementById('statusHasil').value = 'Pending';
+            
+            currentPage = 1; // Kembali ke page 1
+            renderTable();
+        });
+
+        // Mulai Edit Baris
+        function startEdit(id) {
+            editingId = id;
+            renderTable();
+        }
+
+        // Batal Edit
+        function cancelEdit() {
+            editingId = null;
+            renderTable();
+        }
+
+        // Simpan Hasil Edit
+        function saveEdit(id) {
+            const index = journals.findIndex(j => j.id === id);
+            if (index !== -1) {
+                journals[index].mesin = document.getElementById(`edit_mesin_${id}`).value;
+                journals[index].tglAnalisis = document.getElementById(`edit_tgl_${id}`).value;
+                journals[index].jamAnalisis = document.getElementById(`edit_jam_${id}`).value;
+                journals[index].coin = document.getElementById(`edit_coin_${id}`).value.toUpperCase();
+                journals[index].entryLimit = parseFloat(document.getElementById(`edit_entry_${id}`).value);
+                journals[index].targetTP = parseFloat(document.getElementById(`edit_tp_${id}`).value);
+                journals[index].targetSL = parseFloat(document.getElementById(`edit_sl_${id}`).value);
+                journals[index].alasanEntry = document.getElementById(`edit_alasan_${id}`).value;
+                
+                const wHasil = document.getElementById(`edit_hasil_${id}`).value;
+                journals[index].waktuHasil = wHasil ? wHasil : '-';
+                journals[index].status = document.getElementById(`edit_status_${id}`).value;
+                
+                saveData();
+            }
+            editingId = null;
+            renderTable();
+        }
+
+        // Hapus Data
+        function deleteData(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                journals = journals.filter(j => j.id !== id);
+                saveData();
+                renderTable();
+            }
+        }
+
+        // Render Tabel
+        function renderTable() {
+            tableBody.innerHTML = '';
+            
+            const totalPages = Math.ceil(journals.length / rowsPerPage) || 1;
+            
+            // Validasi currentPage
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const paginatedData = journals.slice(startIndex, endIndex);
+
+            if (paginatedData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-gray-500">Belum ada data jurnal trading.</td></tr>`;
+            } else {
+                paginatedData.forEach(j => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-800/50 transition-colors group";
+                    
+                    if (editingId === j.id) {
+                        // MODE EDIT (Ubah teks jadi input)
+                        tr.innerHTML = `
+                            <td class="px-2 py-2">
+                                <select id="edit_mesin_${j.id}" class="w-full bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600">
+                                    <option value="Mesin 1" ${j.mesin === 'Mesin 1' ? 'selected' : ''}>Mesin 1</option>
+                                    <option value="Mesin 2" ${j.mesin === 'Mesin 2' ? 'selected' : ''}>Mesin 2</option>
+                                </select>
+                            </td>
+                            <td class="px-2 py-2"><input type="date" id="edit_tgl_${j.id}" value="${j.tglAnalisis}" class="w-full bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600"></td>
+                            <td class="px-2 py-2"><input type="time" id="edit_jam_${j.id}" value="${j.jamAnalisis}" class="w-full bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600"></td>
+                            <td class="px-2 py-2"><input type="text" id="edit_coin_${j.id}" value="${j.coin}" class="w-full bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600 uppercase"></td>
+                            <td class="px-2 py-2"><input type="number" step="any" id="edit_entry_${j.id}" value="${j.entryLimit}" class="w-24 bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600 text-right"></td>
+                            <td class="px-2 py-2"><input type="number" step="any" id="edit_tp_${j.id}" value="${j.targetTP}" class="w-24 bg-gray-700 text-green-400 rounded px-2 py-1 text-xs border border-gray-600 text-right"></td>
+                            <td class="px-2 py-2"><input type="number" step="any" id="edit_sl_${j.id}" value="${j.targetSL}" class="w-24 bg-gray-700 text-red-400 rounded px-2 py-1 text-xs border border-gray-600 text-right"></td>
+                            <td class="px-2 py-2"><input type="text" id="edit_alasan_${j.id}" value="${j.alasanEntry}" class="w-full min-w-[150px] bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600"></td>
+                            <td class="px-2 py-2"><input type="datetime-local" id="edit_hasil_${j.id}" value="${j.waktuHasil !== '-' ? j.waktuHasil : ''}" class="w-full bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600"></td>
+                            <td class="px-2 py-2">
+                                <select id="edit_status_${j.id}" class="w-full bg-gray-700 text-white rounded px-2 py-1 text-xs border border-gray-600">
+                                    <option value="Pending" ${j.status === 'Pending' || !j.status ? 'selected' : ''}>Pending</option>
+                                    <option value="Win" ${j.status === 'Win' ? 'selected' : ''}>Win</option>
+                                    <option value="Lose" ${j.status === 'Lose' ? 'selected' : ''}>Lose</option>
+                                    <option value="Cancel" ${j.status === 'Cancel' ? 'selected' : ''}>Cancel</option>
+                                </select>
+                            </td>
+                            <td class="px-2 py-2 text-center whitespace-nowrap">
+                                <button onclick="saveEdit(${j.id})" class="text-green-400 hover:text-green-300 font-medium text-xs px-2 py-1 bg-green-400/10 rounded mr-1">Save</button>
+                                <button onclick="cancelEdit()" class="text-gray-400 hover:text-gray-300 font-medium text-xs px-2 py-1 bg-gray-700 rounded">Batal</button>
+                            </td>
+                        `;
+                    } else {
+                        // MODE TAMPILAN BIASA
+                        // Format waktu hasil agar lebih rapi (opsional)
+                        let displayHasil = j.waktuHasil;
+                        if(displayHasil !== '-') {
+                           displayHasil = displayHasil.replace('T', ' ');
+                        }
+
+                        // Badge Status Warna Warni
+                        let statusBadge = '';
+                        if (j.status === 'Win') statusBadge = '<span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-bold border border-green-500/30">WIN</span>';
+                        else if (j.status === 'Lose') statusBadge = '<span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs font-bold border border-red-500/30">LOSE</span>';
+                        else if (j.status === 'Cancel') statusBadge = '<span class="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-bold border border-gray-500/30">CANCEL</span>';
+                        else statusBadge = '<span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs font-bold border border-yellow-500/30">PENDING</span>';
+
+                        tr.innerHTML = `
+                            <td class="px-4 py-3 whitespace-nowrap font-medium text-gray-200">${j.mesin}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">${j.tglAnalisis}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">${j.jamAnalisis}</td>
+                            <td class="px-4 py-3 whitespace-nowrap font-bold text-blue-400">${j.coin}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-right">${j.entryLimit}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-right font-medium text-green-400">${j.targetTP}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-right font-medium text-red-400">${j.targetSL}</td>
+                            <td class="px-4 py-3 min-w-[200px] truncate max-w-[250px]" title="${j.alasanEntry}">${j.alasanEntry}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-gray-400">${displayHasil}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center">${statusBadge}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center opacity-100 xl:opacity-0 xl:group-hover:opacity-100 transition-opacity">
+                                <button onclick="startEdit(${j.id})" class="text-blue-400 hover:text-blue-300 font-medium text-xs mr-3">Edit</button>
+                                <button onclick="deleteData(${j.id})" class="text-red-500 hover:text-red-400 font-medium text-xs">Hapus</button>
+                            </td>
+                        `;
+                    }
+                    tableBody.appendChild(tr);
+                });
+            }
+
+            // Update UI Pagination & Info
+            pageInfo.innerText = `Halaman ${currentPage} dari ${totalPages}`;
+            totalDataBadge.innerText = `Total: ${journals.length}`;
+            
+            btnPrev.disabled = currentPage === 1;
+            btnNext.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Ganti Halaman
+        function changePage(delta) {
+            currentPage += delta;
+            renderTable();
+        }
+
+        // Export ke CSV
+        function exportCSV() {
+            if (journals.length === 0) {
+                alert("Tidak ada data untuk didownload.");
+                return;
+            }
+
+            // Header CSV (Sudah ada status)
+            const headers = [
+                "ID", 
+                "Nama Mesin", 
+                "Tanggal Analisis", 
+                "Jam Analisis", 
+                "Nama Coin", 
+                "Target Entry Limit", 
+                "Target TP", 
+                "Target SL", 
+                "Alasan Entry", 
+                "Tanggal & Jam Hasil",
+                "Status Hasil"
+            ];
+            
+            const csvRows = [headers.join(',')];
+
+            // Mapping Data
+            journals.forEach(row => {
+                // Formatting data yang ada koma/enter agar aman di CSV
+                const safeAlasan = `"${row.alasanEntry.replace(/"/g, '""').replace(/\n/g, ' ')}"`;
+                const safeStatus = row.status || 'Pending';
+                
+                const values = [
+                    row.id,
+                    row.mesin,
+                    row.tglAnalisis,
+                    row.jamAnalisis,
+                    row.coin,
+                    row.entryLimit,
+                    row.targetTP,
+                    row.targetSL,
+                    safeAlasan,
+                    row.waktuHasil,
+                    safeStatus
+                ];
+                csvRows.push(values.join(','));
+            });
+
+            // Membuat File Blob
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Trigger Download
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            // Nama file dinamis dengan tanggal hari ini
+            const dateStr = new Date().toISOString().split('T')[0];
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Jurnal_Trading_Crypto_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
