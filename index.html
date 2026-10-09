@@ -3,159 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asgra Trading Journal</title>
+    <title>Jurnal Trading Crypto</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS untuk Export Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* Animasi tambahan agar terlihat lebih canggih */
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+        }
+        /* Custom Scrollbar untuk tabel */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+    </style>
 </head>
-<body class="bg-gray-900 text-gray-200 font-sans min-h-screen">
+<body class="bg-gray-900 text-gray-200 font-sans min-h-screen selection:bg-blue-500 selection:text-white relative">
 
-    <!-- HALAMAN LOGIN -->
-    <div id="loginPage" class="flex flex-col items-center justify-center min-h-screen">
-        <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center max-w-sm w-full mx-4 border border-gray-750">
-            <h1 class="text-2xl font-bold text-blue-400 mb-2">Jurnal Trading</h1>
-            <p class="text-gray-400 mb-6 text-sm">Sistem Terkunci. Silakan login untuk mengakses data Anda.</p>
-            <button onclick="loginGoogle()" class="w-full bg-white text-gray-900 font-bold py-3 px-4 rounded flex items-center justify-center gap-3 hover:bg-gray-200 transition">
+    <!-- Efek Background Grid Halus -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none z-0"></div>
+
+    <!-- HALAMAN LOGIN (Desain Canggih) -->
+    <div id="loginPage" class="relative z-10 flex flex-col items-center justify-center min-h-screen">
+        <div class="bg-gray-900 p-10 rounded-2xl border border-blue-500/30 neon-glow text-center max-w-sm w-full mx-4 backdrop-blur-sm">
+            <div class="mb-6">
+                <span class="text-5xl">📊</span>
+            </div>
+            <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">CRYPTO JOURNAL</h1>
+            <p class="text-gray-400 mb-8 text-sm tracking-wide">SECURE TERMINAL ACCESS</p>
+            
+            <button onclick="loginGoogle()" class="w-full bg-gradient-to-r from-gray-800 to-gray-700 text-white border border-gray-600 font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-3 hover:border-blue-400 hover:neon-glow transition-all duration-300">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
-                Login dengan Google
+                Initialize Login
             </button>
         </div>
     </div>
 
-    <!-- APLIKASI UTAMA (Disembunyikan sampai user login) -->
-    <div id="mainApp" class="max-w-7xl mx-auto p-4 md:p-8 hidden">
+    <!-- APLIKASI UTAMA (Mengembalikan desain awal) -->
+    <div id="mainApp" class="relative z-10 max-w-7xl mx-auto p-4 md:p-8 hidden">
         
-        <!-- Header & User Info -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-            <h1 class="text-3xl font-bold text-blue-400">📊 Jurnal Trading Crypto</h1>
-            <div class="flex items-center gap-4 bg-gray-800 py-2 px-4 rounded-full border border-gray-700">
-                <span id="userNameDisplay" class="text-sm font-semibold text-gray-300">Memuat user...</span>
-                <button onclick="logoutGoogle()" class="text-xs bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-full transition font-bold">Logout</button>
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-gray-700 pb-4">
+            <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 neon-text">
+                📊 Jurnal Trading Terminal
+            </h1>
+            <div class="flex items-center gap-4 bg-gray-800/80 py-2 px-5 rounded-full border border-blue-500/30 neon-glow backdrop-blur-sm">
+                <span id="userNameDisplay" class="text-sm font-semibold text-blue-300">USER_ID: Memuat...</span>
+                <button onclick="logoutGoogle()" class="text-xs bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white border border-red-500/50 py-1.5 px-4 rounded-full transition-all uppercase tracking-wider font-bold">Logout</button>
             </div>
         </div>
 
         <!-- Form Input -->
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8 border border-gray-750">
-            <h2 class="text-xl font-semibold mb-4 text-white" id="formTitle">Tambah Analisis Baru</h2>
-            <form id="journalForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-2xl mb-8 border border-gray-700 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+            <h2 class="text-xl font-bold mb-5 text-gray-100 flex items-center gap-2" id="formTitle">
+                <span class="text-blue-400">⚡</span> Entry Analisis Baru
+            </h2>
+            
+            <form id="journalForm" class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <input type="hidden" id="editId">
                 
                 <div>
-                    <label class="block text-sm mb-1">Mesin Analisis</label>
-                    <select id="mesin" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600 focus:border-blue-500 outline-none" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Mesin Analisis</label>
+                    <select id="mesin" class="w-full bg-gray-900 rounded-lg p-2.5 text-blue-300 border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" required>
                         <option value="Mesin 1">Mesin 1</option>
                         <option value="Mesin 2">Mesin 2</option>
                     </select>
                 </div>
                 
                 <div>
-                    <label class="block text-sm mb-1">Coin</label>
-                    <input type="text" id="coin" placeholder="Cth: BTC/USDT" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600 uppercase" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Pair Coin</label>
+                    <input type="text" id="coin" placeholder="BTC/USDT" class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none uppercase font-mono transition" required>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-1">Tanggal Analisis</label>
-                    <input type="date" id="tglAnalisis" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Tanggal Analisis</label>
+                    <input type="date" id="tglAnalisis" class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none transition font-mono" required>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-1">Jam Analisis</label>
-                    <input type="time" id="jamAnalisis" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Jam Analisis</label>
+                    <input type="time" id="jamAnalisis" class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none transition font-mono" required>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-1">Target Entry / Limit</label>
-                    <input type="number" step="any" id="entry" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Target Entry / Limit</label>
+                    <input type="number" step="any" id="entry" placeholder="0.00" class="w-full bg-gray-900 rounded-lg p-2.5 text-yellow-400 font-mono font-bold border border-gray-600 focus:border-blue-500 outline-none transition" required>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-1">Target TP (Take Profit)</label>
-                    <input type="number" step="any" id="tp" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Target TP</label>
+                    <input type="number" step="any" id="tp" placeholder="0.00" class="w-full bg-gray-900 rounded-lg p-2.5 text-green-400 font-mono font-bold border border-gray-600 focus:border-green-500 outline-none transition" required>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-1">Target SL (Stop Loss)</label>
-                    <input type="number" step="any" id="sl" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Target SL</label>
+                    <input type="number" step="any" id="sl" placeholder="0.00" class="w-full bg-gray-900 rounded-lg p-2.5 text-red-400 font-mono font-bold border border-gray-600 focus:border-red-500 outline-none transition" required>
                 </div>
 
                 <div class="md:col-span-2">
-                    <label class="block text-sm mb-1">Alasan Entry</label>
-                    <input type="text" id="alasan" placeholder="Cth: Breakout resistance di H4..." class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600" required>
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Alasan Entry</label>
+                    <input type="text" id="alasan" placeholder="Ketik alasan teknikal..." class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none transition" required>
                 </div>
 
                 <!-- Bagian Update Hasil -->
-                <div class="mt-4 md:col-span-3 border-t border-gray-700 pt-4">
-                    <p class="text-sm text-yellow-400 mb-3">📍 *Isi bagian ini saat hasil trade sudah keluar*</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="mt-2 md:col-span-3 border-t border-gray-700 pt-5">
+                    <p class="text-xs text-yellow-500/80 mb-3 uppercase tracking-wider font-bold">⚠️ Update Hasil (Setelah 3-5 Hari)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div>
-                            <label class="block text-sm mb-1">Tanggal Hasil (Opsional)</label>
-                            <input type="date" id="tglHasil" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600">
+                            <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Tanggal Hasil</label>
+                            <input type="date" id="tglHasil" class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none font-mono transition">
                         </div>
                         
                         <div>
-                            <label class="block text-sm mb-1">Jam Hasil (Opsional)</label>
-                            <input type="time" id="jamHasil" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600">
+                            <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Jam Hasil</label>
+                            <input type="time" id="jamHasil" class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none font-mono transition">
                         </div>
 
                         <div>
-                            <label class="block text-sm mb-1">Status Trade</label>
-                            <select id="status" class="w-full bg-gray-700 rounded p-2 text-white border border-gray-600">
-                                <option value="Pending">⏳ Pending</option>
-                                <option value="Win">✅ Win (TP Hit)</option>
-                                <option value="Lose">❌ Lose (SL Hit)</option>
-                                <option value="Cancel">🚫 Cancelled</option>
+                            <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1 font-semibold">Status Trade</label>
+                            <select id="status" class="w-full bg-gray-900 rounded-lg p-2.5 text-white border border-gray-600 focus:border-blue-500 outline-none transition font-bold">
+                                <option value="Pending" class="text-yellow-400">⏳ PENDING</option>
+                                <option value="Win" class="text-green-400">✅ WIN (TP Hit)</option>
+                                <option value="Lose" class="text-red-400">❌ LOSE (SL Hit)</option>
+                                <option value="Cancel" class="text-gray-400">🚫 CANCELLED</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="md:col-span-3 flex gap-2 mt-2">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition">Simpan Jurnal</button>
-                    <button type="button" onclick="resetForm()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition hidden" id="btnCancel">Batal Edit</button>
+                <div class="md:col-span-3 flex gap-3 mt-3">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-[0_0_10px_rgba(37,99,235,0.5)] transition-all uppercase tracking-wide text-sm">Execute Data</button>
+                    <button type="button" onclick="resetForm()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all uppercase tracking-wide text-sm hidden" id="btnCancel">Cancel Edit</button>
                 </div>
             </form>
         </div>
 
         <!-- Tabel Riwayat -->
-        <div class="bg-gray-800 rounded-lg shadow-lg overflow-x-auto border border-gray-750">
-            <div class="flex justify-between items-center p-4 border-b border-gray-700">
-                <h2 class="text-xl font-semibold text-white">Riwayat Trading</h2>
-                <button onclick="exportExcel()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-4 rounded flex items-center gap-2">
-                    📥 Download (Excel)
+        <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
+            <div class="flex justify-between items-center p-5 bg-gray-800 border-b border-gray-700">
+                <h2 class="text-lg font-bold text-gray-200 uppercase tracking-wider flex items-center gap-2">
+                    <span class="text-emerald-400">🗃️</span> Database Riwayat
+                </h2>
+                <button onclick="exportExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-5 rounded-lg flex items-center gap-2 transition-all shadow-[0_0_10px_rgba(5,150,105,0.4)] uppercase tracking-wide">
+                    📥 Export Excel
                 </button>
             </div>
             
-            <table class="w-full text-sm text-left">
-                <thead class="text-xs text-gray-400 uppercase bg-gray-700">
-                    <tr>
-                        <th class="px-4 py-3">Waktu Analisis</th>
-                        <th class="px-4 py-3">Mesin</th>
-                        <th class="px-4 py-3">Coin</th>
-                        <th class="px-4 py-3">Entry</th>
-                        <th class="px-4 py-3">TP</th>
-                        <th class="px-4 py-3">SL</th>
-                        <th class="px-4 py-3">Alasan</th>
-                        <th class="px-4 py-3">Waktu Hasil</th>
-                        <th class="px-4 py-3">Status</th>
-                        <th class="px-4 py-3 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Data dari Firebase akan muncul di sini -->
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left whitespace-nowrap">
+                    <thead class="text-xs text-gray-400 uppercase bg-gray-900 font-bold border-b border-gray-700">
+                        <tr>
+                            <th class="px-5 py-4">Waktu Analisis</th>
+                            <th class="px-5 py-4">Mesin</th>
+                            <th class="px-5 py-4 text-blue-400">Coin</th>
+                            <th class="px-5 py-4 text-yellow-400">Entry</th>
+                            <th class="px-5 py-4 text-green-400">TP</th>
+                            <th class="px-5 py-4 text-red-400">SL</th>
+                            <th class="px-5 py-4">Alasan</th>
+                            <th class="px-5 py-4">Waktu Hasil</th>
+                            <th class="px-5 py-4">Status</th>
+                            <th class="px-5 py-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="font-mono text-xs md:text-sm">
+                        <!-- Data dari Firebase akan muncul di sini -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- Firebase SDK (Menambahkan fitur Auth & Config Anda) -->
+    <!-- Firebase SDK & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // =========================================================
-        // CONFIG FIREBASE MILIK ANDA (ASGRATRADINGJOURNAL)
+        // CONFIG FIREBASE ASGRATRADINGJOURNAL
         // =========================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBG8UeNhLCGYcPSFkdLyvqZw8kIEaWfjHQ",
@@ -175,14 +206,12 @@
 
         let globalTrades = [];
 
-        // --- SISTEM AUTENTIKASI ---
-        
+        // Auth Listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginPage').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
-                document.getElementById('userNameDisplay').innerText = `Halo, ${user.displayName}`;
-                
+                document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
                 loadData();
             } else {
                 document.getElementById('loginPage').classList.remove('hidden');
@@ -192,7 +221,7 @@
 
         window.loginGoogle = () => {
             signInWithPopup(auth, provider).catch((error) => {
-                alert("Gagal login: " + error.message);
+                alert("Sistem Menolak: " + error.message);
             });
         };
 
@@ -203,10 +232,9 @@
             });
         };
 
-        // --- SISTEM DATABASE ---
-
+        // Load Data dari Firestore
         async function loadData() {
-            document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="text-center py-4 text-gray-400">Loading data dari cloud... ⏳</td></tr>`;
+            document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="text-center py-8 text-blue-400 neon-text animate-pulse">Menghubungkan ke Server Cloud... ⏳</td></tr>`;
             
             try {
                 const q = query(collection(db, "trades"), orderBy("timestamp", "desc"));
@@ -220,51 +248,47 @@
                     const id = docSnap.id;
                     globalTrades.push({ id, ...data });
 
+                    // Styling Status Badge canggih
                     let statusBadge = '';
-                    if (data.status === 'Win') statusBadge = '<span class="bg-green-900 text-green-300 py-1 px-2 rounded-full text-xs border border-green-700">✅ Win</span>';
-                    else if (data.status === 'Lose') statusBadge = '<span class="bg-red-900 text-red-300 py-1 px-2 rounded-full text-xs border border-red-700">❌ Lose</span>';
-                    else if (data.status === 'Cancel') statusBadge = '<span class="bg-gray-600 text-gray-300 py-1 px-2 rounded-full text-xs border border-gray-500">🚫 Cancel</span>';
-                    else statusBadge = '<span class="bg-yellow-900 text-yellow-300 py-1 px-2 rounded-full text-xs border border-yellow-700">⏳ Pending</span>';
+                    if (data.status === 'Win') statusBadge = '<span class="bg-green-900/40 text-green-400 py-1 px-3 rounded text-xs font-bold border border-green-500/50 shadow-[0_0_8px_rgba(74,222,128,0.2)]">WIN</span>';
+                    else if (data.status === 'Lose') statusBadge = '<span class="bg-red-900/40 text-red-400 py-1 px-3 rounded text-xs font-bold border border-red-500/50 shadow-[0_0_8px_rgba(248,113,113,0.2)]">LOSE</span>';
+                    else if (data.status === 'Cancel') statusBadge = '<span class="bg-gray-700/40 text-gray-400 py-1 px-3 rounded text-xs font-bold border border-gray-500/50">CANCEL</span>';
+                    else statusBadge = '<span class="bg-yellow-900/40 text-yellow-400 py-1 px-3 rounded text-xs font-bold border border-yellow-500/50 shadow-[0_0_8px_rgba(250,204,21,0.2)] animate-pulse">PENDING</span>';
 
                     html += `
-                        <tr class="border-b border-gray-700 hover:bg-gray-750 transition group">
-                            <td class="px-4 py-3 whitespace-nowrap">${data.tglAnalisis}<br><span class="text-gray-400 text-xs">${data.jamAnalisis}</span></td>
-                            <td class="px-4 py-3">${data.mesin}</td>
-                            <td class="px-4 py-3 font-bold text-blue-400 uppercase">${data.coin}</td>
-                            <td class="px-4 py-3">${data.entry}</td>
-                            <td class="px-4 py-3 text-green-400">${data.tp}</td>
-                            <td class="px-4 py-3 text-red-400">${data.sl}</td>
-                            <td class="px-4 py-3 min-w-[150px]">${data.alasan}</td>
-                            <td class="px-4 py-3 whitespace-nowrap">${data.tglHasil || '-'}<br><span class="text-gray-400 text-xs">${data.jamHasil || ''}</span></td>
-                            <td class="px-4 py-3 whitespace-nowrap">${statusBadge}</td>
-                            <td class="px-4 py-3 text-center whitespace-nowrap">
-                                <button onclick="window.editTrade('${id}')" class="text-blue-400 hover:text-blue-300 font-bold">✏️ Edit</button>
+                        <tr class="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors group">
+                            <td class="px-5 py-4"><div class="text-gray-200">${data.tglAnalisis}</div><div class="text-gray-500 text-xs">${data.jamAnalisis}</div></td>
+                            <td class="px-5 py-4 text-blue-300">${data.mesin}</td>
+                            <td class="px-5 py-4 font-bold text-white uppercase text-base">${data.coin}</td>
+                            <td class="px-5 py-4 text-yellow-400 font-bold">${data.entry}</td>
+                            <td class="px-5 py-4 text-green-400 font-bold">${data.tp}</td>
+                            <td class="px-5 py-4 text-red-400 font-bold">${data.sl}</td>
+                            <td class="px-5 py-4 font-sans text-gray-300 max-w-[200px] truncate" title="${data.alasan}">${data.alasan}</td>
+                            <td class="px-5 py-4"><div class="text-gray-200">${data.tglHasil || '-'}</div><div class="text-gray-500 text-xs">${data.jamHasil || ''}</div></td>
+                            <td class="px-5 py-4">${statusBadge}</td>
+                            <td class="px-5 py-4 text-center">
+                                <button onclick="window.editTrade('${id}')" class="text-blue-400 hover:text-blue-300 font-bold bg-blue-900/20 px-3 py-1.5 rounded border border-blue-800 hover:border-blue-500 transition-all text-xs uppercase tracking-wide">Edit</button>
                             </td>
                         </tr>
                     `;
                 });
 
                 if (globalTrades.length === 0) {
-                    html = `<tr><td colspan="10" class="text-center py-4 text-gray-400">Belum ada riwayat trading.</td></tr>`;
+                    html = `<tr><td colspan="10" class="text-center py-8 text-gray-500 font-sans">Database masih kosong. Lakukan entry pertama Anda.</td></tr>`;
                 }
                 document.getElementById('tableBody').innerHTML = html;
             } catch (error) {
                 console.error("Error loading data:", error);
-                
-                if (error.code === 'permission-denied') {
-                    document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="text-center py-4 text-red-400 font-bold">Akses Ditolak! 🛑<br>Email ini tidak memiliki izin untuk membaca/menulis database sesuai aturan yang ditetapkan di Firebase.</td></tr>`;
-                } else {
-                    document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="text-center py-4 text-red-400">Gagal memuat data. Periksa koneksi internet.</td></tr>`;
-                }
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="text-center py-8 text-red-500 font-bold">Akses Ditolak atau Koneksi Terputus. 🛑</td></tr>`;
             }
         }
 
-        // Simpan Data (Baru & Edit)
+        // Form Submit
         document.getElementById('journalForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.innerHTML = "Menyimpan... ⏳";
+            btn.innerHTML = "EXECUTING... ⚡";
             btn.disabled = true;
 
             const tradeData = {
@@ -295,18 +319,14 @@
                 await loadData();
             } catch (error) {
                 console.error("Error saving doc: ", error);
-                if (error.code === 'permission-denied') {
-                    alert("Gagal: Email ini tidak diizinkan untuk menyimpan data oleh aturan Firebase Anda.");
-                } else {
-                    alert("Gagal menyimpan data!");
-                }
+                alert("Gagal mengeksekusi data ke server.");
             } finally {
-                btn.innerHTML = "Simpan Jurnal";
+                btn.innerHTML = "EXECUTE DATA";
                 btn.disabled = false;
             }
         });
 
-        // Fitur klik tombol Edit
+        // Edit Mode
         window.editTrade = (id) => {
             const trade = globalTrades.find(t => t.id === id);
             if (!trade) return;
@@ -324,7 +344,7 @@
             document.getElementById('jamHasil').value = trade.jamHasil || '';
             document.getElementById('status').value = trade.status || 'Pending';
 
-            document.getElementById('formTitle').innerText = `✏️ Edit Analisis: ${trade.coin}`;
+            document.getElementById('formTitle').innerHTML = `<span class="text-yellow-400">✏️</span> Mode Edit: ${trade.coin}`;
             document.getElementById('btnCancel').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
@@ -333,14 +353,14 @@
             document.getElementById('journalForm').reset();
             document.getElementById('editId').value = '';
             document.getElementById('status').value = 'Pending';
-            document.getElementById('formTitle').innerText = 'Tambah Analisis Baru';
+            document.getElementById('formTitle').innerHTML = `<span class="text-blue-400">⚡</span> Entry Analisis Baru`;
             document.getElementById('btnCancel').classList.add('hidden');
         };
 
-        // Fitur Export Excel
+        // Export Excel via SheetJS
         window.exportExcel = () => {
             if (globalTrades.length === 0) {
-                alert("Belum ada data untuk di-download!");
+                alert("Database kosong!");
                 return;
             }
 
@@ -359,7 +379,6 @@
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(excelData);
-            
             worksheet['!cols'] = [
                 { wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, 
                 { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 40 },
@@ -367,10 +386,10 @@
             ];
 
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Jurnal_Trading");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Crypto_Journal");
 
             const dateStr = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(workbook, `Jurnal_Crypto_${dateStr}.xlsx`);
+            XLSX.writeFile(workbook, `Terminal_Crypto_${dateStr}.xlsx`);
         };
     </script>
 </body>
