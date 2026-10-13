@@ -75,10 +75,10 @@
             </div>
         </header>
 
-        <main class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <main class="grid grid-cols-1 xl:grid-cols-12 gap-8">
             
             <!-- Area Form Input -->
-            <div class="xl:col-span-1">
+            <div class="xl:col-span-3">
                 <div class="bg-darkCard rounded-xl p-6 shadow-xl border border-gray-700/50 sticky top-8">
                     <h2 class="text-xl font-semibold text-white mb-6 border-b border-gray-700 pb-2" id="formTitle">Entry Jurnal Baru</h2>
                     <form id="journalForm" class="space-y-4">
@@ -86,7 +86,7 @@
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Nama Mesin</label>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Mesin</label>
                                 <select id="mesin" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand">
                                     <option value="" disabled selected>Pilih Mesin</option>
                                     <option value="Mesin 1">Mesin 1</option>
@@ -95,16 +95,16 @@
                                 </select>
                             </div>
                             <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Nama Coin</label>
-                                <input type="text" id="coin" required placeholder="Cth: BTC/USDT" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand uppercase">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Nama Koin</label>
+                                <input type="text" id="coin" required placeholder="BTC/USDT" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand uppercase">
                             </div>
 
                             <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Tanggal Analisis</label>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Tgl Analisis (WIB)</label>
                                 <input type="date" id="tglAnalisis" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand">
                             </div>
                             <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Jam Analisis</label>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Jam Analisis (WIB)</label>
                                 <input type="time" id="jamAnalisis" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand">
                             </div>
 
@@ -118,7 +118,20 @@
                             </div>
                             <div class="col-span-2 sm:col-span-1">
                                 <label class="block text-sm font-medium text-gray-400 mb-1">Target SL</label>
-                                <input type="number" step="any" id="targetSL" required placeholder="0.00" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand text-red-400">
+                                <input type="number" step="any" min="0.00000001" id="targetSL" required placeholder="0.00" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand text-red-400">
+                            </div>
+                            
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Risiko (%)</label>
+                                <input type="number" step="any" min="0.01" id="risiko" required placeholder="1.0" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand text-yellow-400">
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Eksekusi Binance</label>
+                                <select id="eksekusiBinance" required class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand">
+                                    <option value="Belum" selected>Belum</option>
+                                    <option value="Ya">Ya</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
                             </div>
 
                             <div class="col-span-2">
@@ -127,23 +140,23 @@
                             </div>
 
                             <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Tanggal & Jam Hasil</label>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Tgl & Jam Hasil (WIB)</label>
                                 <input type="datetime-local" id="waktuHasil" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand">
                             </div>
                             <div class="col-span-2 sm:col-span-1">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Status Hasil</label>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Hasil (Status)</label>
                                 <select id="statusHasil" class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand font-medium">
                                     <option value="Pending" selected>⏳ Pending</option>
-                                    <option value="Win">✅ Win (TP)</option>
-                                    <option value="Lose">❌ Lose (SL)</option>
-                                    <option value="Cancel">🚫 Cancelled</option>
+                                    <option value="TP">✅ TP</option>
+                                    <option value="SL">❌ SL</option>
+                                    <option value="Kedaluwarsa">⏰ Kedaluwarsa</option>
+                                    <option value="Tidak terisi">🚫 Tidak terisi</option>
                                 </select>
                             </div>
 
-                            <!-- Tambahan Fitur: Alasan dari Hasil Analisis -->
                             <div class="col-span-2">
-                                <label class="block text-sm font-medium text-gray-400 mb-1">Alasan Hasil Analisis <span class="text-xs text-gray-500">(Disusul saat hasil keluar)</span></label>
-                                <textarea id="alasanHasil" rows="2" placeholder="Cth: TP kena karena volume breakout valid / SL kena karena news mendadak..." class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand resize-none"></textarea>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Catatan</label>
+                                <textarea id="alasanHasil" rows="2" placeholder="Alasan SL/TP/Kedaluwarsa..." class="w-full bg-darkInput border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand resize-none"></textarea>
                             </div>
                         </div>
 
@@ -160,7 +173,7 @@
             </div>
 
             <!-- Area Tabel -->
-            <div class="xl:col-span-2">
+            <div class="xl:col-span-9">
                 <div class="bg-darkCard rounded-xl shadow-xl border border-gray-700/50 flex flex-col h-full overflow-hidden">
                     <div class="p-6 border-b border-gray-700 flex justify-between items-center">
                         <h2 class="text-xl font-semibold text-white">Riwayat Trading</h2>
@@ -168,21 +181,23 @@
                     </div>
                     
                     <div class="overflow-x-auto p-0 flex-grow">
-                        <table class="w-full text-sm text-left text-gray-300 min-w-[1400px]">
+                        <table class="w-full text-sm text-left text-gray-300 min-w-[1600px]">
                             <thead class="text-xs text-gray-400 uppercase bg-gray-800/50">
                                 <tr>
-                                    <th class="px-4 py-3 whitespace-nowrap">Mesin</th>
-                                    <th class="px-4 py-3 whitespace-nowrap">Tgl Analisis</th>
-                                    <th class="px-4 py-3 whitespace-nowrap">Jam</th>
-                                    <th class="px-4 py-3 whitespace-nowrap">Coin</th>
-                                    <th class="px-4 py-3 whitespace-nowrap text-right">Entry</th>
-                                    <th class="px-4 py-3 whitespace-nowrap text-right text-green-400">TP</th>
-                                    <th class="px-4 py-3 whitespace-nowrap text-right text-red-400">SL</th>
-                                    <th class="px-4 py-3 whitespace-nowrap max-w-[180px]">Alasan Entry</th>
-                                    <th class="px-4 py-3 whitespace-nowrap">Tgl & Jam Hasil</th>
-                                    <th class="px-4 py-3 whitespace-nowrap max-w-[180px]">Alasan Hasil</th>
-                                    <th class="px-4 py-3 whitespace-nowrap text-center">Status</th>
-                                    <th class="px-4 py-3 whitespace-nowrap text-center">Aksi</th>
+                                    <th class="px-3 py-3 whitespace-nowrap">Mesin</th>
+                                    <th class="px-3 py-3 whitespace-nowrap">Tgl & Jam Analisis (WIB)</th>
+                                    <th class="px-3 py-3 whitespace-nowrap">Koin</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-right">Entry</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-right text-green-400">TP</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-right text-red-400">SL</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-center text-blue-300">R</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-center">Risiko %</th>
+                                    <th class="px-3 py-3 whitespace-nowrap max-w-[150px]">Alasan Entry</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-center">Hasil</th>
+                                    <th class="px-3 py-3 whitespace-nowrap">Tgl & Jam Hasil (WIB)</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-center">Binance</th>
+                                    <th class="px-3 py-3 whitespace-nowrap max-w-[150px]">Catatan</th>
+                                    <th class="px-3 py-3 whitespace-nowrap text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" class="divide-y divide-gray-700/50">
@@ -265,7 +280,7 @@
 
         // Load Data dari Firestore
         async function loadDataFromCloud() {
-            tableBody.innerHTML = `<tr><td colspan="12" class="text-center py-8 text-gray-400">Memuat data dari Cloud... ⏳</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="14" class="text-center py-8 text-gray-400">Memuat data dari Cloud... ⏳</td></tr>`;
             try {
                 const q = query(collection(db, "trades"), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
@@ -278,7 +293,7 @@
                 renderTable();
             } catch (error) {
                 console.error("Error loading:", error);
-                tableBody.innerHTML = `<tr><td colspan="12" class="text-center py-8 text-red-400">Gagal memuat data dari database. Periksa aturan Rules Anda.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="14" class="text-center py-8 text-red-400">Gagal memuat data dari database. Periksa aturan Rules Anda.</td></tr>`;
             }
         }
 
@@ -289,15 +304,40 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const targetSL = parseFloat(document.getElementById('targetSL').value);
+            const entryLimit = parseFloat(document.getElementById('entryLimit').value);
+            const targetTP = parseFloat(document.getElementById('targetTP').value);
+            const risiko = parseFloat(document.getElementById('risiko').value);
+            
+            // Validasi SL tidak boleh 0 atau minus
+            if (isNaN(targetSL) || targetSL <= 0) {
+                alert("Kesalahan: Target SL harus berupa angka positif dan tidak boleh 0!");
+                return;
+            }
+
+            // Hitung Otomatis R-Ratio (Risk to Reward)
+            let rRatio = 0;
+            if (targetTP > entryLimit && entryLimit > targetSL) {
+                rRatio = (targetTP - entryLimit) / (entryLimit - targetSL); // Long
+            } else if (targetTP < entryLimit && entryLimit < targetSL) {
+                rRatio = (entryLimit - targetTP) / (targetSL - entryLimit); // Short
+            }
+            
+            // Hapus spasi di nama koin otomatis & set huruf besar
+            const sanitizedCoin = document.getElementById('coin').value.replace(/\s+/g, '').toUpperCase();
+
             const editDocId = document.getElementById('editDocId').value;
             const tradeData = {
                 mesin: document.getElementById('mesin').value,
                 tglAnalisis: document.getElementById('tglAnalisis').value,
                 jamAnalisis: document.getElementById('jamAnalisis').value,
-                coin: document.getElementById('coin').value.toUpperCase(),
-                entryLimit: parseFloat(document.getElementById('entryLimit').value),
-                targetTP: parseFloat(document.getElementById('targetTP').value),
-                targetSL: parseFloat(document.getElementById('targetSL').value),
+                coin: sanitizedCoin,
+                entryLimit: entryLimit,
+                targetTP: targetTP,
+                targetSL: targetSL,
+                rRatio: parseFloat(rRatio.toFixed(2)),
+                risiko: risiko,
+                eksekusiBinance: document.getElementById('eksekusiBinance').value,
                 alasanEntry: document.getElementById('alasanEntry').value,
                 waktuHasil: document.getElementById('waktuHasil').value || '-',
                 alasanHasil: document.getElementById('alasanHasil').value || '-',
@@ -340,10 +380,21 @@
             document.getElementById('entryLimit').value = j.entryLimit;
             document.getElementById('targetTP').value = j.targetTP;
             document.getElementById('targetSL').value = j.targetSL;
+            
+            // Data baru/lama fallback
+            document.getElementById('risiko').value = j.risiko !== undefined ? j.risiko : 1.0;
+            document.getElementById('eksekusiBinance').value = j.eksekusiBinance || 'Belum';
+            
             document.getElementById('alasanEntry').value = j.alasanEntry;
             document.getElementById('waktuHasil').value = j.waktuHasil !== '-' ? j.waktuHasil : '';
             document.getElementById('alasanHasil').value = j.alasanHasil !== '-' ? j.alasanHasil : '';
-            document.getElementById('statusHasil').value = j.status || 'Pending';
+            
+            // Fallback status lama -> dropdown baru
+            let parsedStatus = j.status;
+            if (parsedStatus === 'Win') parsedStatus = 'TP';
+            if (parsedStatus === 'Lose') parsedStatus = 'SL';
+            if (parsedStatus === 'Cancel') parsedStatus = 'Tidak terisi'; 
+            document.getElementById('statusHasil').value = parsedStatus || 'Pending';
 
             document.getElementById('formTitle').innerText = `Edit Jurnal: ${j.coin}`;
             document.getElementById('btnSubmit').innerText = "Update Jurnal";
@@ -388,7 +439,7 @@
             const paginatedData = journals.slice(startIndex, endIndex);
 
             if (paginatedData.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="12" class="text-center py-8 text-gray-500">Belum ada data jurnal trading.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="14" class="text-center py-8 text-gray-500">Belum ada data jurnal trading.</td></tr>`;
             } else {
                 paginatedData.forEach(j => {
                     const tr = document.createElement('tr');
@@ -399,25 +450,38 @@
                        displayHasil = displayHasil.replace('T', ' ');
                     }
 
+                    // Tampilkan status dengan mapping (jika data lama Win/Lose/Cancel)
+                    let statusText = j.status;
+                    if (statusText === 'Win') statusText = 'TP';
+                    if (statusText === 'Lose') statusText = 'SL';
+                    
                     let statusBadge = '';
-                    if (j.status === 'Win') statusBadge = '<span class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded text-xs font-bold border border-green-500/30">WIN</span>';
-                    else if (j.status === 'Lose') statusBadge = '<span class="bg-red-500/20 text-red-400 px-2.5 py-1 rounded text-xs font-bold border border-red-500/30">LOSE</span>';
-                    else if (j.status === 'Cancel') statusBadge = '<span class="bg-gray-500/20 text-gray-400 px-2.5 py-1 rounded text-xs font-bold border border-gray-500/30">CANCEL</span>';
-                    else statusBadge = '<span class="bg-yellow-500/20 text-yellow-400 px-2.5 py-1 rounded text-xs font-bold border border-yellow-500/30">PENDING</span>';
+                    if (statusText === 'TP') statusBadge = '<span class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded text-xs font-bold border border-green-500/30">TP</span>';
+                    else if (statusText === 'SL') statusBadge = '<span class="bg-red-500/20 text-red-400 px-2.5 py-1 rounded text-xs font-bold border border-red-500/30">SL</span>';
+                    else if (statusText === 'Kedaluwarsa') statusBadge = '<span class="bg-yellow-500/20 text-yellow-400 px-2.5 py-1 rounded text-xs font-bold border border-yellow-500/30">KEDALUWARSA</span>';
+                    else if (statusText === 'Tidak terisi' || statusText === 'Cancel') statusBadge = '<span class="bg-gray-500/20 text-gray-400 px-2.5 py-1 rounded text-xs font-bold border border-gray-500/30">' + (statusText === 'Cancel' ? 'CANCEL (Lama)' : 'TIDAK TERISI') + '</span>';
+                    else statusBadge = '<span class="bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded text-xs font-bold border border-blue-500/30">PENDING</span>';
+
+                    // Formatting R Value
+                    const rDisplay = j.rRatio !== undefined ? `${j.rRatio}R` : '-';
+                    const risikoDisplay = j.risiko !== undefined ? `${j.risiko}%` : '-';
+                    const binanceStatus = j.eksekusiBinance || '-';
 
                     tr.innerHTML = `
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-gray-200">${j.mesin}</td>
-                        <td class="px-4 py-3 whitespace-nowrap">${j.tglAnalisis}</td>
-                        <td class="px-4 py-3 whitespace-nowrap">${j.jamAnalisis}</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-bold text-blue-400">${j.coin}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-right">${j.entryLimit}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-right font-medium text-green-400">${j.targetTP}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-right font-medium text-red-400">${j.targetSL}</td>
-                        <td class="px-4 py-3 min-w-[180px] truncate max-w-[200px]" title="${j.alasanEntry}">${j.alasanEntry}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-gray-400">${displayHasil}</td>
-                        <td class="px-4 py-3 min-w-[180px] truncate max-w-[200px]" title="${j.alasanHasil || '-'}">${j.alasanHasil || '-'}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-center">${statusBadge}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-center">
+                        <td class="px-3 py-3 whitespace-nowrap font-medium text-gray-200">${j.mesin}</td>
+                        <td class="px-3 py-3 whitespace-nowrap">${j.tglAnalisis} ${j.jamAnalisis}</td>
+                        <td class="px-3 py-3 whitespace-nowrap font-bold text-blue-400">${j.coin}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-right">${j.entryLimit}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-right font-medium text-green-400">${j.targetTP}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-right font-medium text-red-400">${j.targetSL}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-center font-bold text-blue-300">${rDisplay}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-center text-yellow-400">${risikoDisplay}</td>
+                        <td class="px-3 py-3 min-w-[150px] truncate max-w-[200px]" title="${j.alasanEntry}">${j.alasanEntry}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-center">${statusBadge}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-gray-400">${displayHasil}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-center text-gray-300">${binanceStatus}</td>
+                        <td class="px-3 py-3 min-w-[150px] truncate max-w-[200px]" title="${j.alasanHasil || '-'}">${j.alasanHasil || '-'}</td>
+                        <td class="px-3 py-3 whitespace-nowrap text-center">
                             <button onclick="editData('${j.id}')" class="text-blue-400 hover:text-blue-300 font-medium text-xs mr-3">Edit</button>
                             <button onclick="deleteData('${j.id}')" class="text-red-500 hover:text-red-400 font-medium text-xs">Hapus</button>
                         </td>
@@ -444,27 +508,35 @@
                 return;
             }
 
-            const excelData = journals.map(row => ({
-                "Nama Mesin": row.mesin,
-                "Tanggal Analisis": row.tglAnalisis,
-                "Jam Analisis": row.jamAnalisis,
-                "Nama Coin": row.coin,
-                "Target Entry Limit": row.entryLimit,
-                "Target TP": row.targetTP,
-                "Target SL": row.targetSL,
-                "Alasan Entry": row.alasanEntry,
-                "Tanggal & Jam Hasil": row.waktuHasil,
-                "Alasan Hasil": row.alasanHasil || '-',
-                "Status Hasil": row.status || 'Pending'
-            }));
+            const excelData = journals.map(row => {
+                let mappedStatus = row.status;
+                if(mappedStatus === 'Win') mappedStatus = 'TP';
+                if(mappedStatus === 'Lose') mappedStatus = 'SL';
+
+                return {
+                    "Mesin": row.mesin,
+                    "Tanggal & Jam Analisis (WIB)": `${row.tglAnalisis} ${row.jamAnalisis}`,
+                    "Koin": row.coin,
+                    "Entry": row.entryLimit,
+                    "TP": row.targetTP,
+                    "SL": row.targetSL,
+                    "R (Reward/Risk)": row.rRatio !== undefined ? row.rRatio : '-',
+                    "Risiko %": row.risiko !== undefined ? row.risiko : '-',
+                    "Alasan Entry": row.alasanEntry,
+                    "Hasil": mappedStatus || 'Pending',
+                    "Tanggal & Jam Hasil (WIB)": row.waktuHasil,
+                    "Dieksekusi Binance": row.eksekusiBinance || 'Belum',
+                    "Catatan": row.alasanHasil || '-'
+                }
+            });
 
             const ws = XLSX.utils.json_to_sheet(excelData);
             const wb = XLSX.utils.book_new();
             
             ws['!cols'] = [
-                {wch: 12}, {wch: 15}, {wch: 10}, {wch: 12}, 
-                {wch: 15}, {wch: 15}, {wch: 15}, {wch: 35}, 
-                {wch: 20}, {wch: 35}, {wch: 12}
+                {wch: 12}, {wch: 22}, {wch: 12}, {wch: 15}, 
+                {wch: 15}, {wch: 15}, {wch: 10}, {wch: 10}, 
+                {wch: 35}, {wch: 15}, {wch: 22}, {wch: 18}, {wch: 35}
             ];
 
             XLSX.utils.book_append_sheet(wb, ws, "Jurnal Trading");
